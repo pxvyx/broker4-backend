@@ -1,0 +1,68 @@
+[
+  {
+    "id": "EXP-001",
+    "expert_name": "PGS.TS. Nguyễn Minh Khoa",
+    "institution": "Đại học Bách Khoa Hà Nội",
+    "department": "Khoa Công nghệ Thông tin",
+    "email": "nmkhoa@hust.edu.vn",
+    "specialties": [
+      "Machine Learning",
+      "Tối ưu hóa thuật toán",
+      "Hệ thống nhúng IoT"
+    ],
+    "available_technologies": [
+      "Python (TensorFlow, PyTorch)",
+      "MATLAB",
+      "ROS (Robot Operating System)",
+      "MQTT / Edge Computing"
+    ],
+    "research_areas": "Trí tuệ nhân tạo ứng dụng trong công nghiệp sản xuất và logistics thông minh",
+    "active_projects_count": 3,
+    "is_available": true,
+    "rating": 5.0
+  },
+  {
+    "id": "EXP-002",
+    "expert_name": "TS. Trần Thị Lan Anh",
+    "institution": "Đại học Nông Lâm TP.HCM",
+    "department": "Khoa Công nghệ Thực phẩm",
+    "email": "ttlananh@hcmuaf.edu.vn",
+    "specialties": [
+      "Kiểm soát chất lượng thực phẩm",
+      "Công nghệ sinh học vi sinh",
+      "HACCP & ISO 22000"
+    ],
+    "available_technologies": [
+      "Cảm biến chất lượng thực phẩm (NIR Spectroscopy)",
+      "Hệ thống truy xuất nguồn gốc Blockchain",
+      "LIMS (Laboratory Information Management System)"
+    ],
+    "research_areas": "Ứng dụng công nghệ sinh học và cảm biến thông minh trong kiểm soát chất lượng thực phẩm",
+    "active_projects_count": 2,
+    "is_available": true,
+    "rating": 4.6
+  },
+  {
+    "id": "EXP-003",
+    "expert_name": "GS.TS. Phạm Văn Đức",
+    "institution": "Đại học Bách Khoa TP.HCM",
+    "department": "Khoa Quản lý Công nghiệp",
+    "email": "pvduc@hcmut.edu.vn",
+    "specialties": [
+      "Chiến lược đổi mới sáng tạo",
+      "Quản trị R&D doanh nghiệp",
+      "Chuyển đổi số SME",
+      "Big Data trong dệt may"
+    ],
+    "available_technologies": [
+      "ERP (SAP, Odoo)",
+      "Power BI / Tableau",
+      "AI trong thiết kế thời trang (Generative AI)",
+      "Công nghệ nhuộm sinh thái (Eco-dyeing)"
+    ],
+    "research_areas": "Hệ sinh thái đổi mới sáng tạo và chiến lược chuyển đổi số cho doanh nghiệp vừa và nhỏ",
+    "active_projects_count": 5,
+    "is_available": false,
+    "rating": 4.9
+  }
+]

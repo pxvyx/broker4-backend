@@ -1,0 +1,69 @@
+[
+  {
+    "id": "PRJ-001",
+    "sme_id": "SME-001",
+    "title": "Ứng dụng cảm biến NIR tự động hóa kiểm tra chất lượng sản phẩm",
+    "description": "Xanh Việt cần triển khai hệ thống cảm biến quang phổ NIR để kiểm tra độ tươi và hàm lượng dinh dưỡng của sản phẩm ngay trên dây chuyền sản xuất, thay thế quy trình kiểm tra thủ công hiện tại.",
+    "required_specialties": [
+      "Kiểm soát chất lượng thực phẩm",
+      "HACCP & ISO 22000"
+    ],
+    "budget": 150000000,
+    "deadline": "2025-06-30",
+    "status": "In Progress"
+  },
+  {
+    "id": "PRJ-002",
+    "sme_id": "SME-002",
+    "title": "Nghiên cứu và thử nghiệm quy trình nhuộm sinh thái thân thiện môi trường",
+    "description": "Tân Tiến cần đối tác học thuật nghiên cứu công thức nhuộm vải sử dụng nguyên liệu thiên nhiên, đạt tiêu chuẩn OEKO-TEX, giảm 60% lượng nước thải hóa chất so với quy trình hiện tại.",
+    "required_specialties": [
+      "Big Data trong dệt may",
+      "Chuyển đổi số SME"
+    ],
+    "budget": 280000000,
+    "deadline": "2025-09-30",
+    "status": "Negotiating"
+  },
+  {
+    "id": "PRJ-003",
+    "sme_id": "SME-003",
+    "title": "Phát triển module tối ưu hóa tuyến đường giao hàng bằng Reinforcement Learning",
+    "description": "LogiSmart cần xây dựng module RL tích hợp vào nền tảng SaaS hiện có, xử lý bài toán Vehicle Routing Problem (VRP) với ràng buộc thời gian thực từ dữ liệu giao thông đô thị.",
+    "required_specialties": [
+      "Machine Learning",
+      "Tối ưu hóa thuật toán"
+    ],
+    "budget": 95000000,
+    "deadline": "2025-12-31",
+    "status": "Pending"
+  },
+  {
+    "id": "PRJ-E2E368D3",
+    "sme_id": "SME-001",
+    "title": "Tích hợp AI Chatbot CSKH",
+    "description": "Tự động trả lời tin nhắn Facebook và Website",
+    "required_specialties": [
+      "AI",
+      "NLP",
+      "Chatbot"
+    ],
+    "budget": 100000000.0,
+    "deadline": "2024-12-31",
+    "status": "Completed"
+  },
+  {
+    "id": "PRJ-584A0FE4",
+    "sme_id": "SME-001",
+    "title": "Tích hợp AI Chatbot CSKH",
+    "description": "Tự động trả lời tin nhắn Facebook và Website",
+    "required_specialties": [
+      "AI",
+      "NLP",
+      "Chatbot"
+    ],
+    "budget": 100000000.0,
+    "deadline": "2024-12-31",
+    "status": "Completed"
+  }
+]

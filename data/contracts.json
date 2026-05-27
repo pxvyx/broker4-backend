@@ -1,0 +1,50 @@
+[
+  {
+    "id": "CTR-001",
+    "project_id": "PRJ-001",
+    "expert_id": "EXP-002",
+    "contract_type": "R&D",
+    "signed_date": "2024-04-15",
+    "start_date": "2024-05-01",
+    "end_date": "2025-06-30",
+    "value": 150000000,
+    "status": "Active",
+    "notes": "Hợp đồng R&D triển khai hệ thống NIR Spectroscopy. Nghiệm thu theo 3 giai đoạn."
+  },
+  {
+    "id": "CTR-002",
+    "project_id": "PRJ-002",
+    "expert_id": "EXP-003",
+    "contract_type": "MOU",
+    "signed_date": null,
+    "start_date": null,
+    "end_date": null,
+    "value": null,
+    "status": "Draft",
+    "notes": "MOU đang trong giai đoạn đàm phán điều khoản sở hữu trí tuệ."
+  },
+  {
+    "id": "CTR-8EC13353",
+    "project_id": "PRJ-E2E368D3",
+    "expert_id": "EXP-001",
+    "contract_type": "MOU",
+    "signed_date": "2026-05-27",
+    "start_date": "2026-05-27",
+    "end_date": null,
+    "value": null,
+    "status": "Active",
+    "notes": "MOU khởi tạo tự động ngày 2026-05-27. Các điều khoản cần được hai bên thống nhất trước khi ký."
+  },
+  {
+    "id": "CTR-9D53BDFD",
+    "project_id": "PRJ-584A0FE4",
+    "expert_id": "EXP-001",
+    "contract_type": "MOU",
+    "signed_date": "2026-05-27",
+    "start_date": "2026-05-27",
+    "end_date": null,
+    "value": null,
+    "status": "Active",
+    "notes": "MOU khởi tạo tự động ngày 2026-05-27. Các điều khoản cần được hai bên thống nhất trước khi ký."
+  }
+]

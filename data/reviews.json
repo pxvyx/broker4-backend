@@ -1,0 +1,44 @@
+[
+  {
+    "id": "RVW-001",
+    "project_id": "PRJ-001",
+    "reviewer_sme_id": "SME-001",
+    "reviewed_expert_id": "EXP-002",
+    "rating": 5,
+    "feedback": "Chuyên gia nắm chắc yêu cầu thực tế của nhà máy, chuyển giao công nghệ bài bản và hỗ trợ đào tạo nhân sự vận hành rất tận tâm.",
+    "created_at": "2025-01-10",
+    "tags": [
+      "chuyển giao công nghệ",
+      "đào tạo nhân sự",
+      "đúng tiến độ"
+    ]
+  },
+  {
+    "id": "RVW-43782B7B",
+    "project_id": "PRJ-E2E368D3",
+    "reviewer_sme_id": "SME-001",
+    "reviewed_expert_id": "EXP-001",
+    "rating": 5,
+    "feedback": "Chuyên gia làm việc rất đúng hạn, chatbot phản hồi mượt mà.",
+    "created_at": "2026-05-27",
+    "tags": [
+      "AI",
+      "NLP",
+      "Đúng hạn"
+    ]
+  },
+  {
+    "id": "RVW-C50B5FD1",
+    "project_id": "PRJ-584A0FE4",
+    "reviewer_sme_id": "SME-001",
+    "reviewed_expert_id": "EXP-001",
+    "rating": 5,
+    "feedback": "Chuyên gia làm việc rất đúng hạn, chatbot phản hồi mượt mà.",
+    "created_at": "2026-05-27",
+    "tags": [
+      "AI",
+      "NLP",
+      "Đúng hạn"
+    ]
+  }
+]

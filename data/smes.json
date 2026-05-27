@@ -1,0 +1,41 @@
+[
+  {
+    "id": "SME-001",
+    "company_name": "Công ty CP Thực phẩm Xanh Việt",
+    "industry": "Chế biến thực phẩm & Nông nghiệp",
+    "contact_email": "contact@xanhviet.com.vn",
+    "founded_year": 2015,
+    "employee_count": 85,
+    "pain_points": [
+      "Thiếu nhân sự chuyên môn về kiểm soát chất lượng",
+      "Quy trình sản xuất chưa được tự động hóa",
+      "E ngại rủi ro tài chính khi đầu tư công nghệ mới"
+    ]
+  },
+  {
+    "id": "SME-002",
+    "company_name": "Công ty TNHH Dệt May Tân Tiến",
+    "industry": "Dệt may & Thời trang",
+    "contact_email": "info@tantien-textile.vn",
+    "founded_year": 2008,
+    "employee_count": 320,
+    "pain_points": [
+      "Khó tiếp cận công nghệ nhuộm thân thiện môi trường",
+      "Thiếu dữ liệu phân tích xu hướng thị trường",
+      "Năng suất lao động thấp so với chuẩn khu vực"
+    ]
+  },
+  {
+    "id": "SME-003",
+    "company_name": "Công ty CP Phần mềm LogiSmart",
+    "industry": "Công nghệ thông tin & Logistics",
+    "contact_email": "hello@logismart.io",
+    "founded_year": 2020,
+    "employee_count": 42,
+    "pain_points": [
+      "Thuật toán tối ưu hóa tuyến đường chưa đủ mạnh",
+      "Khó tích hợp dữ liệu thời gian thực từ nhiều nguồn",
+      "Thiếu chuyên gia về Machine Learning ứng dụng"
+    ]
+  }
+]
