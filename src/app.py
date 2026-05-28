@@ -14,6 +14,7 @@ Hoặc dùng lệnh:
 import logging
 import os
 from flask import Flask
+from flask_cors import CORS # Đảm bảo đã import
 
 # ── Import tất cả Blueprints ───────────────────────────────────────────────────
 from src.controllers.project_controller  import project_bp
@@ -34,6 +35,8 @@ def create_app() -> Flask:
         Flask application đã được cấu hình đầy đủ.
     """
     app = Flask(__name__)
+
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
 
     # ── Cấu hình Logging ──────────────────────────────────────────────
     logging.basicConfig(
