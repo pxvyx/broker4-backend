@@ -39,7 +39,7 @@ def create_app() -> Flask:
 
     app.url_map.strict_slashes = False
 
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    CORS(app, resources={r"/*": {"origins": "*"}})
 
     @app.before_request
     def handle_preflight():
