@@ -7,14 +7,8 @@
     "rating": 4.9,
     "projects": 12,
     "available": true,
-    "tags": [
-      "AI/ML",
-      "Phân tích dữ liệu"
-    ],
-    "expertise": [
-      "Python",
-      "TensorFlow"
-    ]
+    "tags": ["AI/ML", "Phân tích dữ liệu"],
+    "expertise": ["Python", "TensorFlow"]
   },
   {
     "id": "EXP-002",
@@ -24,31 +18,16 @@
     "rating": 4.7,
     "projects": 8,
     "available": true,
-    "tags": [
-      "Phân tích dữ liệu",
-      "AI/ML"
-    ],
-    "expertise": [
-      "Hadoop",
-      "Spark"
-    ]
+    "tags": ["Phân tích dữ liệu", "AI/ML"],
+    "expertise": ["Hadoop", "Spark"]
   },
   {
     "id": "EXP-003",
     "expert_name": "ThS. Phạm Thị Lan",
     "institution": "Viện Công nghệ Thông tin",
     "title": "Kỹ sư Hệ thống",
-    "department": null,
-    "email": null,
-    "tags": [
-      "IoT",
-      "ERP"
-    ],
-    "expertise": [
-      "C++",
-      "SCADA"
-    ],
-    "research_areas": null,
+    "tags": ["IoT", "ERP"],
+    "expertise": ["C++", "SCADA"],
     "projects": 5,
     "available": true,
     "rating": 3.0
@@ -61,13 +40,8 @@
     "rating": 5.0,
     "projects": 20,
     "available": false,
-    "tags": [
-      "An toàn thông tin"
-    ],
-    "expertise": [
-      "Pen-testing",
-      "Cryptography"
-    ]
+    "tags": ["An toàn thông tin"],
+    "expertise": ["Pen-testing", "Cryptography"]
   },
   {
     "id": "EXP-005",
@@ -77,14 +51,8 @@
     "rating": 4.6,
     "projects": 15,
     "available": true,
-    "tags": [
-      "Thương mại điện tử",
-      "Phân tích dữ liệu"
-    ],
-    "expertise": [
-      "Digital Marketing",
-      "SEO"
-    ]
+    "tags": ["Thương mại điện tử", "Phân tích dữ liệu"],
+    "expertise": ["Digital Marketing", "SEO"]
   },
   {
     "id": "EXP-006",
@@ -94,13 +62,8 @@
     "rating": 4.5,
     "projects": 9,
     "available": true,
-    "tags": [
-      "ERP"
-    ],
-    "expertise": [
-      "SAP",
-      "Odoo"
-    ]
+    "tags": ["ERP"],
+    "expertise": ["SAP", "Odoo"]
   },
   {
     "id": "EXP-007",
@@ -110,31 +73,16 @@
     "rating": 4.9,
     "projects": 11,
     "available": true,
-    "tags": [
-      "AI/ML"
-    ],
-    "expertise": [
-      "Computer Vision",
-      "NLP"
-    ]
+    "tags": ["AI/ML"],
+    "expertise": ["Computer Vision", "NLP"]
   },
   {
     "id": "EXP-008",
     "expert_name": "PGS.TS Lý Quốc Hùng",
     "institution": "Đại học Công nghệ - ĐHQGHN",
     "title": "Trưởng phòng Lab IoT",
-    "department": null,
-    "email": null,
-    "tags": [
-      "IoT",
-      "Phân tích dữ liệu"
-    ],
-    "expertise": [
-      "Arduino",
-      "Raspberry Pi",
-      "MQTT"
-    ],
-    "research_areas": null,
+    "tags": ["IoT", "Phân tích dữ liệu"],
+    "expertise": ["Arduino", "Raspberry Pi", "MQTT"],
     "projects": 18,
     "available": true,
     "rating": 4.0
@@ -147,13 +95,8 @@
     "rating": 4.7,
     "projects": 7,
     "available": true,
-    "tags": [
-      "Thương mại điện tử"
-    ],
-    "expertise": [
-      "Shopify",
-      "Magento"
-    ]
+    "tags": ["Thương mại điện tử"],
+    "expertise": ["Shopify", "Magento"]
   },
   {
     "id": "EXP-010",
@@ -163,13 +106,117 @@
     "rating": 4.9,
     "projects": 14,
     "available": true,
-    "tags": [
-      "An toàn thông tin",
-      "AI/ML"
-    ],
-    "expertise": [
-      "AWS Security",
-      "Azure"
-    ]
+    "tags": ["An toàn thông tin", "AI/ML"],
+    "expertise": ["AWS Security", "Azure"]
+  },
+  {
+    "id": "LAB-011",
+    "expert_name": "Phòng Lab Nghiên cứu Web3 & Blockchain",
+    "title": "Tổ chức nghiên cứu",
+    "institution": "Đại học Tôn Đức Thắng",
+    "rating": 4.8,
+    "projects": 22,
+    "available": true,
+    "tags": ["Blockchain", "Smart Contract"],
+    "expertise": ["Solidity", "Ethereum", "Hyperledger"]
+  },
+  {
+    "id": "EXP-012",
+    "expert_name": "TS. Đặng Minh Châu",
+    "title": "Kiến trúc sư Cloud",
+    "institution": "Viện Công nghệ Bưu chính Viễn thông",
+    "rating": 4.7,
+    "projects": 6,
+    "available": true,
+    "tags": ["Cloud Computing", "ERP"],
+    "expertise": ["Google Cloud", "Kubernetes", "Docker"]
+  },
+  {
+    "id": "LAB-013",
+    "expert_name": "Trung tâm Đổi mới Sáng tạo Robotics",
+    "title": "Phòng Lab Robot công nghiệp",
+    "institution": "Đại học Sư phạm Kỹ thuật TP.HCM",
+    "rating": 5.0,
+    "projects": 35,
+    "available": true,
+    "tags": ["Robotics", "IoT"],
+    "expertise": ["PLC", "Cánh tay Robot", "AutoCAD"]
+  },
+  {
+    "id": "EXP-014",
+    "expert_name": "PGS.TS Phan Thị Thu Hà",
+    "title": "Chuyên gia Nông nghiệp Công nghệ cao",
+    "institution": "Học viện Nông nghiệp Việt Nam",
+    "rating": 4.9,
+    "projects": 19,
+    "available": false,
+    "tags": ["Nông nghiệp thông minh", "IoT"],
+    "expertise": ["Cảm biến sinh học", "Hệ thống tưới tự động"]
+  },
+  {
+    "id": "EXP-015",
+    "expert_name": "ThS. Trương Vĩnh Ký",
+    "title": "Kỹ sư NLP",
+    "institution": "Công ty Cổ phần VNG",
+    "rating": 4.6,
+    "projects": 10,
+    "available": true,
+    "tags": ["AI/ML", "NLP"],
+    "expertise": ["PyTorch", "Hugging Face", "LLMs"]
+  },
+  {
+    "id": "LAB-016",
+    "expert_name": "Phòng Lab Phân tích Dữ liệu Lớn (Big Data)",
+    "title": "Tổ chức nghiên cứu",
+    "institution": "Đại học Kinh tế TP.HCM",
+    "rating": 4.8,
+    "projects": 28,
+    "available": true,
+    "tags": ["Phân tích dữ liệu", "Big Data"],
+    "expertise": ["Tableau", "Power BI", "SQL Server"]
+  },
+  {
+    "id": "EXP-017",
+    "expert_name": "TS. Nguyễn Trần Bảo Ngọc",
+    "title": "Chuyên gia Supply Chain",
+    "institution": "Đại học Giao thông Vận tải",
+    "rating": 4.5,
+    "projects": 13,
+    "available": true,
+    "tags": ["Supply Chain", "Phân tích dữ liệu"],
+    "expertise": ["Logistics Optimization", "ERP Logistics"]
+  },
+  {
+    "id": "EXP-018",
+    "expert_name": "ThS. Lê Quang Huy",
+    "title": "Lập trình viên Fullstack",
+    "institution": "Đại học FPT",
+    "rating": 4.7,
+    "projects": 16,
+    "available": true,
+    "tags": ["Web Development", "Thương mại điện tử"],
+    "expertise": ["ReactJS", "NodeJS", "MongoDB"]
+  },
+  {
+    "id": "LAB-019",
+    "expert_name": "Viện Nghiên cứu Ứng dụng Y tế Số",
+    "title": "Tổ chức nghiên cứu",
+    "institution": "Đại học Y Dược TP.HCM",
+    "rating": 5.0,
+    "projects": 40,
+    "available": true,
+    "tags": ["Y tế thông minh", "AI/ML", "Phân tích dữ liệu"],
+    "expertise": ["Health Data", "Medical Imaging AI"]
+  },
+  {
+    "id": "EXP-020",
+    "expert_name": "TS. Ngô Thanh Tuấn",
+    "title": "Chuyên gia Hệ thống Nhúng",
+    "institution": "Đại học Tôn Đức Thắng",
+    "rating": 4.4,
+    "projects": 4,
+    "available": true,
+    "tags": ["IoT", "Bảo mật hệ thống"],
+    "expertise": ["C/C++", "RTOS", "Thiết kế mạch PCB"]
   }
 ]

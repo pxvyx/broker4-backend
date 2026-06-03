@@ -37,6 +37,8 @@ def create_app() -> Flask:
     """
     app = Flask(__name__)
 
+    app.url_map.strict_slashes = False
+
     CORS(app, resources={r"/api/*": {"origins": "*"}})
 
     # ── Cấu hình Logging ──────────────────────────────────────────────
