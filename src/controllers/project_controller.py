@@ -16,7 +16,7 @@ Endpoints:
 import logging
 from flask import Blueprint, request, jsonify
 
-from src.services.project_service import create_project, get_project
+from src.services.project_service import create_project, get_project, get_projects_by_sme
 
 logger = logging.getLogger(__name__)
 
@@ -99,3 +99,27 @@ def get_project_endpoint(project_id: str):
     except LookupError as exc:
         logger.warning("[ProjectController.get] LookupError: %s", str(exc))
         return _err(str(exc), 404)
+    
+
+@project_bp.route("/sme/<sme_id>", methods=["GET"])
+def get_projects_by_sme_endpoint(sme_id: str):
+    """
+    GET /api/projects/sme/<sme_id>
+    Lấy danh sách các dự án của một SME cụ thể (Màn hình Lịch sử Dự án).
+
+    Response 200: Mảng các Project object.
+    Response 500: Lỗi hệ thống.
+    """
+    try:
+        # Gọi xuống tầng Service để lấy dữ liệu
+        projects = get_projects_by_sme(sme_id)
+        
+        # Nếu data trả về là list các object (entities), ta cần chuyển sang dict
+        # Nếu service đã trả về list dict rồi thì chỉ cần data=projects
+        data = [p.to_dict() for p in projects] if projects else []
+        
+        return _ok(data=data)
+
+    except Exception as exc:
+        logger.error("[ProjectController.get_by_sme] Error: %s", str(exc))
+        return _err("Đã xảy ra lỗi khi lấy danh sách dự án.", 500)

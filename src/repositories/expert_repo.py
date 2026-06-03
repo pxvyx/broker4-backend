@@ -131,17 +131,17 @@ class ExpertRepository(JsonRepository):
 
     def get_available(self) -> List[Expert]:
         """
-        Lọc danh sách Expert đang sẵn sàng nhận dự án (is_available=True).
+        Lọc danh sách Expert đang sẵn sàng nhận dự án (available=True).
         Dùng làm bước tiền lọc trước khi matching chuyên môn.
 
         Returns:
-            List[Expert] với is_available == True.
+            List[Expert] với available == True.
         """
-        return [exp for exp in self.get_all() if exp.is_available]
+        return [exp for exp in self.get_all() if exp.available]
 
     def get_by_technology(self, technology: str) -> List[Expert]:
         """
-        Lọc Expert theo công nghệ trong trường `available_technologies`.
+        Lọc Expert theo công nghệ trong trường `expertise`.
         Tìm kiếm substring, không phân biệt hoa/thường.
 
         Args:
@@ -153,7 +153,7 @@ class ExpertRepository(JsonRepository):
         keyword = technology.lower().strip()
         return [
             expert for expert in self.get_all()
-            if any(keyword in t.lower() for t in expert.available_technologies)
+            if any(keyword in t.lower() for t in expert.expertise)
         ]
 
     # ------------------------------------------------------------------
@@ -163,7 +163,7 @@ class ExpertRepository(JsonRepository):
     def update_availability(
         self,
         expert_id: str,
-        is_available: bool,
+        available: bool,
     ) -> bool:
         """
         Cập nhật trạng thái sẵn sàng nhận dự án của Expert.
@@ -171,7 +171,7 @@ class ExpertRepository(JsonRepository):
 
         Args:
             expert_id:    ID của Expert cần cập nhật.
-            is_available: True = rảnh, sẵn sàng nhận dự án mới.
+            available: True = rảnh, sẵn sàng nhận dự án mới.
                           False = đang bận, không nhận thêm.
 
         Returns:
@@ -193,12 +193,12 @@ class ExpertRepository(JsonRepository):
             )
             return False
 
-        raw_list[target_index]["is_available"] = is_available
+        raw_list[target_index]["available"] = available
         logger.info(
             "[ExpertRepository.update_availability] "
-            "Expert id='%s' → is_available=%s.",
+            "Expert id='%s' → available=%s.",
             expert_id,
-            is_available,
+            available,
         )
         return self._save_all_raw(raw_list)
 

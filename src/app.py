@@ -21,6 +21,7 @@ from src.controllers.project_controller  import project_bp
 from src.controllers.matching_controller import matching_bp
 from src.controllers.contract_controller import contract_bp
 from src.controllers.review_controller   import review_bp
+from src.controllers.expert_controller import expert_bp
 
 
 
@@ -51,6 +52,7 @@ def create_app() -> Flask:
     app.register_blueprint(matching_bp)  # Bước 2 — GET  /api/matches/<id>
     app.register_blueprint(contract_bp)  # Bước 3&4 — POST /api/contracts/...
     app.register_blueprint(review_bp)    # Bước 6 — POST /api/reviews
+    app.register_blueprint(expert_bp, url_prefix='/api')
 
 
     from src.controllers.execution_controller import execution_bp

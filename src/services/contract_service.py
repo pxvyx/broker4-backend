@@ -75,7 +75,7 @@ def initiate_negotiation(project_id: str, expert_id: str) -> Contract:
     expert = _expert_repo.get_by_id(expert_id)
     if not expert:
         raise LookupError(f"Không tìm thấy Expert với id='{expert_id}'.")
-    if not expert.is_available:
+    if not expert.available:
         raise ValueError(
             f"Expert id='{expert_id}' ({expert.expert_name}) "
             "hiện không available để nhận dự án mới."

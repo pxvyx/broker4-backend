@@ -3,7 +3,8 @@ Module  : src/models/expert.py
 Layer   : Models (Entities)
 Purpose : Định nghĩa cấu trúc dữ liệu cho thực thể Expert.
 
-THAY ĐỔI: Không có — giữ nguyên từ Bước 2 ban đầu.
+THAY ĐỔI: Đã cập nhật Schema để khớp với bộ dữ liệu Seed mới 
+(tags, expertise, title, projects, available).
 
 Quan hệ Pseudo-Relational:
     Expert (1) ──< Contract (N)  :  truy vấn qua ContractRepository.get_by_expert_id()
@@ -24,13 +25,14 @@ class Expert:
     id: str
     expert_name: str
     institution: str
-    specialties: List[str] = field(default_factory=list)
-    available_technologies: List[str] = field(default_factory=list)
+    title: Optional[str] = None
+    tags: List[str] = field(default_factory=list)
+    expertise: List[str] = field(default_factory=list)
     department: Optional[str] = None
     email: Optional[str] = None
     research_areas: Optional[str] = None
-    active_projects_count: int = 0
-    is_available: bool = True
+    projects: int = 0
+    available: bool = True
     rating: Optional[float] = None
 
     @classmethod
@@ -39,13 +41,14 @@ class Expert:
             id=data["id"],
             expert_name=data["expert_name"],
             institution=data["institution"],
-            specialties=data.get("specialties", []),
-            available_technologies=data.get("available_technologies", []),
+            title=data.get("title"),
+            tags=data.get("tags", []),
+            expertise=data.get("expertise", []),
             department=data.get("department"),
             email=data.get("email"),
             research_areas=data.get("research_areas"),
-            active_projects_count=data.get("active_projects_count", 0),
-            is_available=data.get("is_available", True),
+            projects=data.get("projects", 0),
+            available=data.get("available", True),
             rating=data.get("rating"),
         )
 
@@ -54,12 +57,13 @@ class Expert:
             "id": self.id,
             "expert_name": self.expert_name,
             "institution": self.institution,
+            "title": self.title,
             "department": self.department,
             "email": self.email,
-            "specialties": self.specialties,
-            "available_technologies": self.available_technologies,
+            "tags": self.tags,
+            "expertise": self.expertise,
             "research_areas": self.research_areas,
-            "active_projects_count": self.active_projects_count,
-            "is_available": self.is_available,
+            "projects": self.projects,
+            "available": self.available,
             "rating": self.rating,
         }

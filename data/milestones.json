@@ -1,10 +1,26 @@
 [
   {
-    "id": "MLS-A1B2C3D4",
-    "project_id": "PRJ-001",
-    "title": "Hoàn thành phân tích yêu cầu",
-    "description": "Thống nhất tài liệu đặc tả hệ thống với SME.",
-    "due_date": "2024-06-15",
+    "id": "MLS-INPROG02-A",
+    "project_id": "PRJ-INPROG02",
+    "title": "Hoàn thành phân tích kiến trúc IoT",
+    "description": "Thiết kế sơ đồ lắp đặt cảm biến tại kho.",
+    "due_date": "2026-02-15",
+    "status": "Completed"
+  },
+  {
+    "id": "MLS-INPROG02-B",
+    "project_id": "PRJ-INPROG02",
+    "title": "Phát triển model Machine Learning",
+    "description": "Huấn luyện AI trên tập dữ liệu lịch sử xuất nhập kho.",
+    "due_date": "2026-06-30",
     "status": "Pending"
+  },
+  {
+    "id": "MLS-DONE03-A",
+    "project_id": "PRJ-DONE03",
+    "title": "Triển khai Chatbot lên Website",
+    "description": "Tích hợp API và live test.",
+    "due_date": "2026-02-28",
+    "status": "Completed"
   }
 ]

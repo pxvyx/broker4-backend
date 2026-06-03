@@ -43,28 +43,28 @@ def _calculate_match_score(project: Project, expert: Expert) -> int:
     """
     raw_score = 0
 
-    # ── Tiêu chí 1: required_specialties ↔ expert.specialties ─────────
+    # ── Tiêu chí 1: required_specialties ↔ expert.tags ─────────
     # Đây là tiêu chí quan trọng nhất — SME đã khai báo rõ cần chuyên môn gì.
     for req_spec in project.required_specialties:
         req_lower = req_spec.lower()
-        for exp_spec in expert.specialties:
+        for exp_spec in expert.tags:
             exp_lower = exp_spec.lower()
             # Substring match hai chiều: "Machine Learning" khớp "Machine Learning ứng dụng"
             if req_lower in exp_lower or exp_lower in req_lower:
                 raw_score += 30
                 break  # Tránh cộng 2 lần cho cùng 1 required_spec
 
-    # ── Tiêu chí 2: title keywords ↔ expert.specialties ───────────────
+    # ── Tiêu chí 2: title keywords ↔ expert.tags ───────────────
     title_words = [w for w in project.title.lower().split() if len(w) >= 3]
     for word in title_words:
-        for exp_spec in expert.specialties:
+        for exp_spec in expert.tags:
             if word in exp_spec.lower():
                 raw_score += 8
                 break
 
-    # ── Tiêu chí 3: title keywords ↔ expert.available_technologies ────
+    # ── Tiêu chí 3: title keywords ↔ expert.expertise ────
     for word in title_words:
-        for tech in expert.available_technologies:
+        for tech in expert.expertise:
             if word in tech.lower():
                 raw_score += 5
                 break
@@ -118,7 +118,7 @@ def find_matches(project_id: str) -> List[Dict[str, Any]]:
 
         match_reasons = [
             req for req in project.required_specialties
-            if any(req.lower() in spec.lower() or spec.lower() in req.lower() for spec in expert.specialties)
+            if any(req.lower() in spec.lower() or spec.lower() in req.lower() for spec in expert.tags)
         ]
 
         results.append({
