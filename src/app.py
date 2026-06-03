@@ -13,7 +13,7 @@ Hoặc dùng lệnh:
 
 import logging
 import os
-from flask import Flask
+from flask import Flask, request, make_response
 from flask_cors import CORS # Đảm bảo đã import
 
 # ── Import tất cả Blueprints ───────────────────────────────────────────────────
@@ -40,6 +40,15 @@ def create_app() -> Flask:
     app.url_map.strict_slashes = False
 
     CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+    @app.before_request
+    def handle_preflight():
+        if request.method == "OPTIONS":
+            response = make_response()
+            response.headers.add("Access-Control-Allow-Origin", "*")
+            response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")
+            response.headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+            return response, 200
 
     # ── Cấu hình Logging ──────────────────────────────────────────────
     logging.basicConfig(
