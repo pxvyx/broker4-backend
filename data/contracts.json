@@ -66,5 +66,17 @@
     "value": null,
     "status": "Active",
     "notes": "MOU khởi tạo tự động ngày 2026-06-03. Các điều khoản cần được hai bên thống nhất trước khi ký."
+  },
+  {
+    "id": "CTR-13490444",
+    "project_id": "PRJ-DC237BBD",
+    "expert_id": "EXP-010",
+    "contract_type": "MOU",
+    "signed_date": "2026-06-04",
+    "start_date": "2026-06-04",
+    "end_date": null,
+    "value": null,
+    "status": "Active",
+    "notes": "MOU khởi tạo tự động ngày 2026-06-04. Các điều khoản cần được hai bên thống nhất trước khi ký."
   }
 ]

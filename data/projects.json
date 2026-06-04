@@ -4,7 +4,11 @@
     "sme_id": "SME-001",
     "title": "Nghiên cứu ứng dụng Blockchain trong truy xuất nguồn gốc nông sản",
     "description": "Cần xây dựng hệ thống minh bạch quy trình từ nông trại đến bàn ăn.",
-    "required_specialties": ["Blockchain", "Supply Chain", "Smart Contract"],
+    "required_specialties": [
+      "Blockchain",
+      "Supply Chain",
+      "Smart Contract"
+    ],
     "budget": 300000000,
     "deadline": "2026-12-31",
     "status": "Pending"
@@ -14,7 +18,10 @@
     "sme_id": "SME-001",
     "title": "Hệ thống quản lý tồn kho thông minh (IoT + AI)",
     "description": "Tích hợp cảm biến IoT và AI để dự đoán lượng hàng tồn kho cần thiết.",
-    "required_specialties": ["IoT", "AI/ML"],
+    "required_specialties": [
+      "IoT",
+      "AI/ML"
+    ],
     "budget": 450000000,
     "deadline": "2026-10-15",
     "status": "In Progress"
@@ -24,47 +31,62 @@
     "sme_id": "SME-001",
     "title": "Xây dựng Chatbot AI tự động chăm sóc khách hàng",
     "description": "Sử dụng LLM để tự động trả lời các câu hỏi thường gặp của khách hàng.",
-    "required_specialties": ["AI/ML", "NLP"],
+    "required_specialties": [
+      "AI/ML",
+      "NLP"
+    ],
     "budget": 150000000,
     "deadline": "2026-03-01",
     "status": "Completed"
   },
   {
     "id": "PRJ-PENDING04",
-    "sme_id": "SME-002",
+    "sme_id": "SME-001",
     "title": "Triển khai hệ thống ERP cho chuỗi bán lẻ",
     "description": "Cần chuyên gia tư vấn và thiết lập hệ thống ERP đồng bộ dữ liệu từ 20 cửa hàng.",
-    "required_specialties": ["ERP", "Phân tích dữ liệu"],
+    "required_specialties": [
+      "ERP",
+      "Phân tích dữ liệu"
+    ],
     "budget": 800000000,
     "deadline": "2027-02-28",
     "status": "Pending"
   },
   {
     "id": "PRJ-INPROG05",
-    "sme_id": "SME-003",
+    "sme_id": "SME-001",
     "title": "Đánh giá và nâng cấp bảo mật hệ thống thanh toán",
     "description": "Thực hiện Pen-test và vá các lỗ hổng bảo mật cho cổng thanh toán nội bộ.",
-    "required_specialties": ["An toàn thông tin", "Bảo mật hệ thống"],
+    "required_specialties": [
+      "An toàn thông tin",
+      "Bảo mật hệ thống"
+    ],
     "budget": 200000000,
     "deadline": "2026-08-30",
     "status": "In Progress"
   },
   {
     "id": "PRJ-DONE06",
-    "sme_id": "SME-004",
+    "sme_id": "SME-001",
     "title": "Xây dựng nền tảng Thương mại điện tử B2B",
     "description": "Thiết kế website và hệ thống quản trị đơn hàng bán sỉ cho nhà phân phối.",
-    "required_specialties": ["Thương mại điện tử", "Web Development"],
+    "required_specialties": [
+      "Thương mại điện tử",
+      "Web Development"
+    ],
     "budget": 350000000,
     "deadline": "2025-11-15",
     "status": "Completed"
   },
   {
     "id": "PRJ-PENDING07",
-    "sme_id": "SME-005",
+    "sme_id": "SME-001",
     "title": "Mô hình AI dự đoán rủi ro tín dụng",
     "description": "Xây dựng model Machine Learning để đánh giá điểm tín dụng khách hàng dựa trên lịch sử giao dịch.",
-    "required_specialties": ["AI/ML", "Phân tích dữ liệu"],
+    "required_specialties": [
+      "AI/ML",
+      "Phân tích dữ liệu"
+    ],
     "budget": 500000000,
     "deadline": "2026-11-30",
     "status": "Pending"
@@ -74,47 +96,62 @@
     "sme_id": "SME-001",
     "title": "Giải pháp Smart Home cho khu đô thị mới",
     "description": "Thiết kế kiến trúc hệ thống thiết bị IoT cho 500 căn hộ thông minh.",
-    "required_specialties": ["IoT", "Viễn thông"],
+    "required_specialties": [
+      "IoT",
+      "Viễn thông"
+    ],
     "budget": 1200000000,
     "deadline": "2027-05-01",
     "status": "In Progress"
   },
   {
     "id": "PRJ-DONE09",
-    "sme_id": "SME-002",
+    "sme_id": "SME-001",
     "title": "Tối ưu hóa chiến dịch Digital Marketing bằng Big Data",
     "description": "Phân tích tập dữ liệu 2TB để tìm ra hành vi mua sắm của khách hàng mục tiêu.",
-    "required_specialties": ["Phân tích dữ liệu", "Thương mại điện tử"],
+    "required_specialties": [
+      "Phân tích dữ liệu",
+      "Thương mại điện tử"
+    ],
     "budget": 180000000,
     "deadline": "2026-01-20",
     "status": "Completed"
   },
   {
     "id": "PRJ-PENDING10",
-    "sme_id": "SME-003",
+    "sme_id": "SME-001",
     "title": "Di chuyển hạ tầng nội bộ lên Cloud (AWS)",
     "description": "Cần tư vấn giải pháp Cloud Computing tiết kiệm chi phí và đảm bảo an toàn dữ liệu.",
-    "required_specialties": ["Cloud Computing", "An toàn thông tin"],
+    "required_specialties": [
+      "Cloud Computing",
+      "An toàn thông tin"
+    ],
     "budget": 250000000,
     "deadline": "2026-09-15",
     "status": "Pending"
   },
   {
     "id": "PRJ-INPROG11",
-    "sme_id": "SME-004",
+    "sme_id": "SME-001",
     "title": "Nhận diện khuôn mặt (FaceID) cho hệ thống chấm công",
     "description": "Ứng dụng Computer Vision để chấm công tự động cho nhà máy 1000 công nhân.",
-    "required_specialties": ["AI/ML", "Computer Vision"],
+    "required_specialties": [
+      "AI/ML",
+      "Computer Vision"
+    ],
     "budget": 320000000,
     "deadline": "2026-12-10",
     "status": "In Progress"
   },
   {
     "id": "PRJ-DONE12",
-    "sme_id": "SME-005",
+    "sme_id": "SME-001",
     "title": "Phát triển Smart Contract cho điểm thưởng Loyalty",
     "description": "Mã hóa điểm thưởng của khách hàng dưới dạng token trên nền tảng Blockchain.",
-    "required_specialties": ["Blockchain", "Smart Contract"],
+    "required_specialties": [
+      "Blockchain",
+      "Smart Contract"
+    ],
     "budget": 400000000,
     "deadline": "2025-12-31",
     "status": "Completed"
@@ -124,7 +161,10 @@
     "sme_id": "SME-001",
     "title": "Hệ thống giám sát chất lượng nước nuôi tôm bằng IoT",
     "description": "Cảnh báo tự động về nồng độ oxy và độ pH thông qua ứng dụng di động.",
-    "required_specialties": ["IoT", "Nông nghiệp thông minh"],
+    "required_specialties": [
+      "IoT",
+      "Nông nghiệp thông minh"
+    ],
     "budget": 280000000,
     "deadline": "2027-03-15",
     "status": "Pending"
