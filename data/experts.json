@@ -136,18 +136,21 @@
   {
     "id": "EXP-009",
     "expert_name": "ThS. Mai Phương Thảo",
-    "title": "Cố vấn TMĐT",
     "institution": "Đại học Ngoại Thương",
-    "rating": 4.7,
-    "projects": 7,
-    "available": true,
+    "title": "Cố vấn TMĐT",
+    "department": null,
+    "email": null,
     "tags": [
       "Thương mại điện tử"
     ],
     "expertise": [
       "Shopify",
       "Magento"
-    ]
+    ],
+    "research_areas": null,
+    "projects": 7,
+    "available": true,
+    "rating": 5.0
   },
   {
     "id": "EXP-010",

@@ -16,7 +16,7 @@ Endpoints:
 import logging
 from flask import Blueprint, request, jsonify
 
-from src.services.project_service import create_project, get_project, get_projects_by_sme
+from src.services.project_service import create_project, get_project, get_projects_by_sme, update_project_status
 
 logger = logging.getLogger(__name__)
 

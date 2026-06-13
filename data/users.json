@@ -1,0 +1,20 @@
+[
+  {
+    "id": "SME-001",
+    "email": "tungduongisme19@gmail.com",
+    "name": "do tung duong",
+    "role": "SME",
+    "auth_provider": "local",
+    "password_hash": "3a01155774d6e9e7811d7cfb099649c128a8ed0c0ab484ac2d32b971bd273b7d",
+    "created_at": "2026-06-11T00:00:00Z"
+  },
+  {
+    "id": "SME-002",
+    "email": "baonhido396@gmail.com",
+    "name": "do bao nhi",
+    "role": "SME",
+    "auth_provider": "local",
+    "password_hash": "b13abf25245ea0a244037c4305afe8f9a674d9b36e25a3ecc32f092282ef9afb",
+    "created_at": "2026-06-11T00:00:00Z"
+  }
+]

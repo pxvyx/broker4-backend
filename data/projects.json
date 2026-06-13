@@ -168,5 +168,136 @@
     "budget": 280000000,
     "deadline": "2027-03-15",
     "status": "Pending"
+  },
+  {
+    "id": "PRJ-5675D44E",
+    "sme_id": "SME-001",
+    "title": "[Logistics & Vận tải] Dự án CĐS – TNHH ABCD",
+    "description": "hiện tại đang không biết kiểm soát sao để vận chuyển từ nhập đến xuát",
+    "required_specialties": [
+      "Phân tích dữ liệu & BI",
+      "Quản trị chuỗi cung ứng"
+    ],
+    "budget": null,
+    "deadline": "2027-06-11",
+    "status": "Pending"
+  },
+  {
+    "id": "PRJ-FA1E46F9",
+    "sme_id": "SME-001",
+    "title": "[Logistics & Vận tải] Dự án CĐS – tnhh abcd",
+    "description": "khó khăn trong tạo chuỗi cung ứng",
+    "required_specialties": [
+      "Tự động hóa quy trình (RPA / AI)",
+      "Quản trị chuỗi cung ứng"
+    ],
+    "budget": null,
+    "deadline": "2027-06-11",
+    "status": "Pending"
+  },
+  {
+    "id": "PRJ-78DE75F5",
+    "sme_id": "SME-001",
+    "title": "[Logistics & Vận tải] Dự án CĐS – abcd",
+    "description": "khó khăn trong quản lý chuỗi",
+    "required_specialties": [
+      "Quản trị chuỗi cung ứng",
+      "Thương mại điện tử & Marketing số"
+    ],
+    "budget": null,
+    "deadline": "2026-12-11",
+    "status": "Completed"
+  },
+  {
+    "id": "PRJ-D4DB8D03",
+    "sme_id": "SME-001",
+    "title": "[Y tế & Dược phẩm] Dự án CĐS – abcd",
+    "description": "an toàn thông tin và chuỗi cung ứng",
+    "required_specialties": [
+      "Tự động hóa quy trình (RPA / AI)",
+      "An toàn thông tin",
+      "Quản trị chuỗi cung ứng"
+    ],
+    "budget": null,
+    "deadline": "2026-12-11",
+    "status": "Pending"
+  },
+  {
+    "id": "PRJ-0F49EDF8",
+    "sme_id": "SME-001",
+    "title": "[Y tế & Dược phẩm] Dự án CĐS – abcd",
+    "description": "quản lý chuỗi cung ứng",
+    "required_specialties": [
+      "Tự động hóa quy trình (RPA / AI)",
+      "Quản trị chuỗi cung ứng"
+    ],
+    "budget": null,
+    "deadline": "2026-12-11",
+    "status": "Pending"
+  },
+  {
+    "id": "PRJ-F0F582FE",
+    "sme_id": "SME-001",
+    "title": "[Logistics & Vận tải] Dự án CĐS – do bao nhi",
+    "description": "quản lý chuỗi",
+    "required_specialties": [
+      "Quản trị chuỗi cung ứng"
+    ],
+    "budget": null,
+    "deadline": "2026-12-11",
+    "status": "Pending"
+  },
+  {
+    "id": "PRJ-6953A4F4",
+    "sme_id": "SME-001",
+    "title": "[Logistics & Vận tải] Dự án CĐS – ABCD",
+    "description": "chuỗi cung ứng",
+    "required_specialties": [
+      "Quản trị chuỗi cung ứng",
+      "Tự động hóa quy trình (RPA / AI)"
+    ],
+    "budget": null,
+    "deadline": "2026-12-11",
+    "status": "Pending"
+  },
+  {
+    "id": "PRJ-627E1B28",
+    "sme_id": "SME-001",
+    "title": "[Logistics & Vận tải] Dự án CĐS – abcd",
+    "description": "chuỗi cung ứng",
+    "required_specialties": [
+      "Quản trị chuỗi cung ứng"
+    ],
+    "budget": null,
+    "deadline": "2026-12-11",
+    "status": "Pending"
+  },
+  {
+    "id": "PRJ-92100B26",
+    "sme_id": "SME-001",
+    "title": "[Logistics & Vận tải] Dự án CĐS – BACS",
+    "description": "quản lý chuỗi cung ứng nguồn ra nguồn vào",
+    "required_specialties": [
+      "Tự động hóa quy trình (RPA / AI)",
+      "Quản trị chuỗi cung ứng",
+      "An toàn thông tin"
+    ],
+    "budget": null,
+    "deadline": "2026-12-11",
+    "status": "Negotiating"
+  },
+  {
+    "id": "PRJ-55AE8554",
+    "sme_id": "SME-001",
+    "title": "[Logistics & Vận tải] Dự án CĐS – abcd",
+    "description": "chuỗi cung ứng",
+    "required_specialties": [
+      "Quản trị chuỗi cung ứng",
+      "Tự động hóa quy trình (RPA / AI)",
+      "An toàn thông tin"
+    ],
+    "budget": null,
+    "deadline": "2026-12-11",
+    "status": "Pending"
   }
 ]

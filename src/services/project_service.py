@@ -99,3 +99,42 @@ def get_project(project_id: str) -> Project:
 
 def get_projects_by_sme(sme_id: str) -> list:
     return _project_repo.get_by_sme_id(sme_id)
+
+
+def update_project_status(project_id: str, new_status: str) -> Project:
+    """
+    Cập nhật trạng thái của Project.
+
+    Args:
+        project_id: ID của project cần update.
+        new_status: Trạng thái mới (Pending | Negotiating | In Progress | Completed).
+
+    Returns:
+        Project object sau khi cập nhật.
+
+    Raises:
+        LookupError: Nếu project không tồn tại.
+        ValueError: Nếu status không hợp lệ.
+    """
+    # Validate status
+    if new_status not in PROJECT_STATUSES:
+        raise ValueError(f"Status không hợp lệ. Cho phép: {', '.join(PROJECT_STATUSES)}")
+
+    # Lấy project
+    project = _project_repo.get_by_id(project_id)
+    if not project:
+        raise LookupError(f"Không tìm thấy project {project_id}.")
+
+    # Update status
+    old_status = project.status
+    project.status = new_status
+
+    # Save
+    if not _project_repo.save(project):
+        raise IOError("Không thể cập nhật project.")
+
+    logger.info(
+        "[ProjectService] Cập nhật project id='%s' status: %s → %s",
+        project_id, old_status, new_status,
+    )
+    return project

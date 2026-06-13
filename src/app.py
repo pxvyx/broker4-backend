@@ -22,6 +22,8 @@ from src.controllers.matching_controller import matching_bp
 from src.controllers.contract_controller import contract_bp
 from src.controllers.review_controller   import review_bp
 from src.controllers.expert_controller import expert_bp
+from src.controllers.auth_controller   import auth_bp
+from src.controllers.post_controller   import post_bp
 
 
 
@@ -64,6 +66,8 @@ def create_app() -> Flask:
     app.register_blueprint(contract_bp)  # Bước 3&4 — POST /api/contracts/...
     app.register_blueprint(review_bp)    # Bước 6 — POST /api/reviews
     app.register_blueprint(expert_bp, url_prefix='/api')
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(post_bp)      # Community Posts
 
 
     from src.controllers.execution_controller import execution_bp

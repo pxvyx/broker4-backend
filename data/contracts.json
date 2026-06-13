@@ -78,5 +78,29 @@
     "value": null,
     "status": "Active",
     "notes": "MOU khởi tạo tự động ngày 2026-06-04. Các điều khoản cần được hai bên thống nhất trước khi ký."
+  },
+  {
+    "id": "CTR-2900ADF3",
+    "project_id": "PRJ-78DE75F5",
+    "expert_id": "EXP-009",
+    "contract_type": "MOU",
+    "signed_date": "2026-06-11",
+    "start_date": "2026-06-11",
+    "end_date": null,
+    "value": null,
+    "status": "Active",
+    "notes": "MOU khởi tạo tự động ngày 2026-06-11. Các điều khoản cần được hai bên thống nhất trước khi ký."
+  },
+  {
+    "id": "CTR-C85B7FC7",
+    "project_id": "PRJ-92100B26",
+    "expert_id": "EXP-010",
+    "contract_type": "MOU",
+    "signed_date": null,
+    "start_date": null,
+    "end_date": null,
+    "value": null,
+    "status": "Draft",
+    "notes": "MOU khởi tạo tự động ngày 2026-06-11. Các điều khoản cần được hai bên thống nhất trước khi ký."
   }
 ]
