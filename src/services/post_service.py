@@ -5,6 +5,7 @@ Purpose : PostService — logic xử lý Posts (CRUD, Like toggle).
 """
 
 import logging
+import uuid
 from datetime import datetime
 from typing import List
 from src.models.post import Post
@@ -44,6 +45,32 @@ def create_post(author_id: str, author_name: str, author_role: str, content: str
         raise IOError("Không thể lưu bài viết.")
 
     logger.info(f"[PostService] Tạo post mới: {post_id}")
+    return post
+
+
+def add_comment_to_post(post_id: str, user_id: str, user_name: str, text: str) -> Post:
+    """Thêm bình luận vào bài viết."""
+    if not text or not text.strip():
+        raise ValueError("Nội dung bình luận không được để trống.")
+
+    post = _post_repo.get_by_id(post_id)
+    if not post:
+        raise LookupError(f"Không tìm thấy post {post_id}.")
+
+    comment = {
+        "comment_id": f"CMT-{uuid.uuid4().hex[:8].upper()}",
+        "user_id": user_id,
+        "user_name": user_name,
+        "text": text.strip(),
+        "created_at": datetime.utcnow().isoformat() + "Z",
+    }
+    post.comments.append(comment)
+
+    updated = _post_repo.update_post(post)
+    if not updated:
+        raise IOError("Không thể lưu bình luận.")
+
+    logger.info(f"[PostService] Thêm bình luận cho post {post_id} bởi {user_id}")
     return post
 
 

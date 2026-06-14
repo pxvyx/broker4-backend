@@ -16,5 +16,14 @@
     "auth_provider": "local",
     "password_hash": "b13abf25245ea0a244037c4305afe8f9a674d9b36e25a3ecc32f092282ef9afb",
     "created_at": "2026-06-11T00:00:00Z"
+  },
+  {
+    "id": "EXPERT-001",
+    "email": "duongdotung@gmail.com",
+    "name": "duong",
+    "role": "EXPERT",
+    "auth_provider": "local",
+    "password_hash": "b13abf25245ea0a244037c4305afe8f9a674d9b36e25a3ecc32f092282ef9afb",
+    "created_at": "2026-06-11T00:00:00Z"
   }
 ]

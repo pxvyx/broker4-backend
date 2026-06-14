@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "id": "POST-001",
+    "author_id": "EXPERT-001",
+    "author_name": "duong",
+    "author_role": "EXPERT",
+    "content": "hello",
+    "created_at": "2026-06-14T10:00:31.317868Z",
+    "likes": [
+      "EXPERT-001"
+    ],
+    "comments": [
+      {
+        "comment_id": "CMT-ED99782D",
+        "user_id": "EXPERT-001",
+        "user_name": "duong",
+        "text": "tooi thich ban",
+        "created_at": "2026-06-14T10:00:39.558394Z"
+      }
+    ]
+  }
+]

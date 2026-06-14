@@ -13,11 +13,13 @@ from typing import Optional
 
 from src.models.project import Project, PROJECT_STATUSES
 from src.repositories.project_repo import ProjectRepository
+from src.repositories.user_repo import UserRepository
 
 logger = logging.getLogger(__name__)
 
-# Module-level repository instance (shared trong toàn service)
+# Module-level repository instances (shared trong toàn service)
 _project_repo = ProjectRepository()
+_user_repo = UserRepository()
 
 
 def create_project(
@@ -55,6 +57,10 @@ def create_project(
         raise ValueError("title không được để trống.")
     if budget is not None and float(budget) < 0:
         raise ValueError("budget không được là số âm.")
+
+    sme_user = _user_repo.get_by_id(sme_id.strip())
+    if not sme_user or sme_user.get("role") != "SME":
+        raise ValueError("Chỉ tài khoản SME mới được phép tạo dự án.")
 
     # ── Tạo Project mới với status mặc định = Pending ─────────────────
     project = Project(

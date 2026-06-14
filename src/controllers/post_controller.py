@@ -6,7 +6,7 @@ Purpose : API endpoints cho Community Posts (CRUD + Like).
 
 import logging
 from flask import Blueprint, request, jsonify
-from src.services.post_service import create_post, get_all_posts, toggle_like_post, delete_post
+from src.services.post_service import add_comment_to_post, create_post, get_all_posts, toggle_like_post, delete_post
 
 logger = logging.getLogger(__name__)
 
@@ -96,3 +96,31 @@ def delete_post_endpoint(post_id: str):
     except Exception as exc:
         logger.error(f"[PostController.delete] {str(exc)}")
         return _err("Lỗi hệ thống khi xóa bài viết.", 500)
+
+
+@post_bp.route("/<post_id>/comments", methods=["POST"])
+def add_comment_endpoint(post_id: str):
+    """POST /api/posts/<post_id>/comments — Thêm bình luận vào bài viết."""
+    body = request.get_json(silent=True) or {}
+    user_id = body.get("user_id", "")
+    user_name = body.get("user_name", "")
+    text = body.get("text", "")
+
+    if not user_id or not user_name or not text:
+        return _err("user_id, user_name và text là bắt buộc.", 400)
+
+    try:
+        post = add_comment_to_post(post_id, user_id, user_name, text)
+        return _ok(
+            data=post.to_dict(),
+            message="Bình luận đã được thêm thành công.",
+        )
+    except LookupError as exc:
+        logger.warning(f"[PostController.comment] {str(exc)}")
+        return _err(str(exc), 404)
+    except ValueError as exc:
+        logger.warning(f"[PostController.comment] {str(exc)}")
+        return _err(str(exc), 400)
+    except Exception as exc:
+        logger.error(f"[PostController.comment] {str(exc)}")
+        return _err("Lỗi hệ thống khi thêm bình luận.", 500)
