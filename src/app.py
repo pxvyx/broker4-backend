@@ -22,6 +22,13 @@ from src.controllers.matching_controller import matching_bp
 from src.controllers.contract_controller import contract_bp
 from src.controllers.review_controller   import review_bp
 from src.controllers.expert_controller import expert_bp
+from src.controllers.execution_controller import execution_bp
+from src.controllers.dashboard_controller import dashboard_bp
+from src.controllers.post_controller import post_bp
+from src.config.firebase_config import init_firebase
+from src.controllers.auth_controller import auth_bp
+
+    
 
 
 
@@ -40,6 +47,7 @@ def create_app() -> Flask:
     app.url_map.strict_slashes = False
 
     CORS(app, resources={r"/*": {"origins": "*"}})
+    init_firebase()
 
     @app.before_request
     def handle_preflight():
@@ -63,15 +71,11 @@ def create_app() -> Flask:
     app.register_blueprint(matching_bp)  # Bước 2 — GET  /api/matches/<id>
     app.register_blueprint(contract_bp)  # Bước 3&4 — POST /api/contracts/...
     app.register_blueprint(review_bp)    # Bước 6 — POST /api/reviews
-    app.register_blueprint(expert_bp, url_prefix='/api')
-
-
-    from src.controllers.execution_controller import execution_bp
-    from src.controllers.dashboard_controller import dashboard_bp
-
-    app.register_blueprint(execution_bp)
-    app.register_blueprint(dashboard_bp)
-
+    app.register_blueprint(expert_bp, url_prefix='/api') # Bước 5 — GET /api/experts
+    app.register_blueprint(execution_bp) # Bước 5 — POST /api/execution/...
+    app.register_blueprint(dashboard_bp) # Bước 7 — GET /api/dashboard/...
+    app.register_blueprint(post_bp)   # Innovation Feed — GET/POST /api/posts, POST /api/posts/<id>/like, POST /api/posts/<id>/comments
+    app.register_blueprint(auth_bp)   # Authentication — POST /api/auth/register, POST /api/auth/login
     # ── Log toàn bộ routes đã đăng ký ────────────────────────────────
     logger = logging.getLogger(__name__)
     logger.info("=" * 60)
