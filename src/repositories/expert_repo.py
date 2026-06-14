@@ -1,53 +1,61 @@
 """
 Module  : src/repositories/expert_repo.py
 Layer   : Repositories (Data Access Layer)
-Purpose : ExpertRepository — toàn bộ thao tác đọc/ghi dữ liệu Expert.
+Purpose : ExpertRepository — toàn bộ thao tác đọc/ghi Expert trên MongoDB.
 
-Nguyên tắc tầng Repository:
-  - Chỉ trả về Model objects (Expert) hoặc None / [].
-  - KHÔNG chứa business logic matching hay scoring.
-  - KHÔNG biết gì về HTTP, Flask, hay JSON response format.
-  - Tầng Services ở trên gọi Repository, chiều ngược lại KHÔNG được phép.
+THAY ĐỔI SO VỚI PHIÊN BẢN JSON:
+    ① Bỏ kế thừa JsonRepository — kết nối thẳng MongoDB.
+    ② get_by_specialty()     → $regex trên mảng specialties.
+    ③ get_by_technology()    → $regex trên mảng expertise.
+    ④ get_available()        → query {"available": True}.
+    ⑤ update_availability()  → update_one + $set (không đọc lại toàn bộ collection).
+    ⑥ save()                 → update_one upsert=True.
+
+Collection: broker4_db.experts
+Index nên tạo:
+    db.experts.createIndex({ "id": 1 },           { unique: true })
+    db.experts.createIndex({ "available": 1 })
+    db.experts.createIndex({ "specialties": 1 })
 """
 
 import logging
 from typing import List, Optional
 
+from pymongo.collection import Collection
+from pymongo.errors import PyMongoError
+
+from src.config.db import get_db
 from src.models.expert import Expert
-from src.repositories.json_repository import JsonRepository
 
 logger = logging.getLogger(__name__)
 
-# Đường dẫn tương đối tính từ thư mục gốc broker_4_0_backend/
-_EXPERT_DATA_FILE = "data/experts.json"
+_NO_ID: dict = {"_id": 0}
 
 
-class ExpertRepository(JsonRepository):
-    """
-    Repository chuyên biệt cho entity Expert.
-    Kế thừa JsonRepository để dùng read_json / write_json làm primitive I/O.
-    """
+class ExpertRepository:
+    """Repository chuyên biệt cho entity Expert trên MongoDB Atlas."""
 
-    def __init__(self, filepath: str = _EXPERT_DATA_FILE):
-        """
-        Args:
-            filepath: Đường dẫn tương đối đến file experts.json.
-                      Mặc định: "data/experts.json" (tính từ broker_4_0_backend/).
-                      Có thể override khi test để trỏ vào file fixture.
-        """
-        super().__init__(filepath)
+    def __init__(self) -> None:
+        self.collection: Collection = get_db()["experts"]
 
     # ------------------------------------------------------------------
-    # Private helpers — chỉ dùng nội bộ trong class này
+    # Private helper
     # ------------------------------------------------------------------
 
-    def _load_all_raw(self) -> List[dict]:
-        """Đọc toàn bộ file, trả về list[dict] thô. Dùng nội bộ."""
-        return self.read_json()
-
-    def _save_all_raw(self, raw_list: List[dict]) -> bool:
-        """Ghi toàn bộ list[dict] thô xuống file. Dùng nội bộ."""
-        return self.write_json(raw_list)
+    def _doc_to_expert(self, doc: dict) -> Optional[Expert]:
+        """
+        Chuyển MongoDB document thành Expert object.
+        Loại bỏ _id trước khi parse để tránh lỗi Model.
+        """
+        doc.pop("_id", None)
+        try:
+            return Expert.from_dict(doc)
+        except (KeyError, TypeError) as exc:
+            logger.warning(
+                "[ExpertRepository] Bỏ qua document lỗi cấu trúc (id='%s'): %s",
+                doc.get("id", "UNKNOWN"), str(exc),
+            )
+            return None
 
     # ------------------------------------------------------------------
     # Public Read methods
@@ -55,184 +63,228 @@ class ExpertRepository(JsonRepository):
 
     def get_all(self) -> List[Expert]:
         """
-        Lấy toàn bộ danh sách Expert dưới dạng Model objects.
+        Lấy toàn bộ danh sách Expert.
 
-        Các record lỗi cấu trúc bị bỏ qua và log, không ảnh hưởng các record còn lại.
-
-        Returns:
-            List[Expert] — Có thể là [] nếu file lỗi hoặc rỗng.
+        MongoDB: db.experts.find({}, {"_id": 0})
         """
-        raw_list = self._load_all_raw()
-        result: List[Expert] = []
+        try:
+            cursor = self.collection.find({}, _NO_ID)
+            result = [
+                expert
+                for doc in cursor
+                if (expert := self._doc_to_expert(doc)) is not None
+            ]
+            logger.debug(
+                "[ExpertRepository.get_all] Lấy được %d expert(s).", len(result)
+            )
+            return result
 
-        for raw in raw_list:
-            try:
-                result.append(Expert.from_dict(raw))
-            except (KeyError, TypeError) as exc:
-                logger.warning(
-                    "[ExpertRepository.get_all] Bỏ qua record lỗi cấu trúc "
-                    "(id='%s'): %s",
-                    raw.get("id", "UNKNOWN"),
-                    str(exc),
-                )
-
-        return result
+        except PyMongoError as exc:
+            logger.error(
+                "[ExpertRepository.get_all] Lỗi MongoDB: %s. Trả về [].", str(exc)
+            )
+            return []
 
     def get_by_id(self, expert_id: str) -> Optional[Expert]:
         """
-        Tìm và trả về một Expert theo ID.
+        Tìm Expert theo string ID.
 
-        Args:
-            expert_id: Chuỗi định danh Expert (vd: "EXP-001").
-
-        Returns:
-            Expert object nếu tìm thấy và parse thành công.
-            None nếu không tìm thấy hoặc record bị lỗi cấu trúc.
+        MongoDB: db.experts.find_one({"id": expert_id}, {"_id": 0})
         """
-        raw_list = self._load_all_raw()
+        try:
+            doc = self.collection.find_one({"id": expert_id}, _NO_ID)
+            if doc is None:
+                logger.debug(
+                    "[ExpertRepository.get_by_id] Không tìm thấy id='%s'.", expert_id
+                )
+                return None
+            return self._doc_to_expert(doc)
 
-        for raw in raw_list:
-            if raw.get("id") == expert_id:
-                try:
-                    return Expert.from_dict(raw)
-                except (KeyError, TypeError) as exc:
-                    logger.error(
-                        "[ExpertRepository.get_by_id] Tìm thấy id='%s' "
-                        "nhưng parse thất bại: %s",
-                        expert_id,
-                        str(exc),
-                    )
-                    return None
-
-        logger.debug(
-            "[ExpertRepository.get_by_id] Không tìm thấy Expert với id='%s'.",
-            expert_id,
-        )
-        return None
+        except PyMongoError as exc:
+            logger.error(
+                "[ExpertRepository.get_by_id] Lỗi MongoDB (id='%s'): %s.",
+                expert_id, str(exc),
+            )
+            return None
 
     def get_by_specialty(self, specialty: str) -> List[Expert]:
         """
-        Lọc Expert theo chuyên môn trong trường `specialties`.
-        Đây là phương thức cốt lõi phục vụ luồng matching A1 và A2.
+        Tìm Expert có chuyên môn khớp với từ khóa.
+        Dùng $regex trên mảng specialties — MongoDB tự duyệt từng phần tử.
 
-        Tìm kiếm substring, không phân biệt hoa/thường (case-insensitive).
+        MongoDB:
+            db.experts.find({
+                "specialties": { "$regex": keyword, "$options": "i" }
+            }, {"_id": 0})
 
         Args:
-            specialty: Từ khóa chuyên môn (vd: "Machine Learning", "AI", "sinh học").
-
-        Returns:
-            List[Expert] có ít nhất một specialty chứa từ khóa.
+            specialty: Từ khóa chuyên môn (vd: "Machine Learning", "AI").
         """
-        keyword = specialty.lower().strip()
-        return [
-            expert for expert in self.get_all()
-            if any(keyword in s.lower() for s in expert.specialties)
-        ]
+        try:
+            query = {
+                "specialties": {
+                    "$regex": specialty.strip(),
+                    "$options": "i",   # case-insensitive
+                }
+            }
+            cursor = self.collection.find(query, _NO_ID)
+            result = [
+                expert
+                for doc in cursor
+                if (expert := self._doc_to_expert(doc)) is not None
+            ]
+            logger.debug(
+                "[ExpertRepository.get_by_specialty] keyword='%s' → %d kết quả.",
+                specialty, len(result),
+            )
+            return result
+
+        except PyMongoError as exc:
+            logger.error(
+                "[ExpertRepository.get_by_specialty] Lỗi MongoDB: %s. Trả về [].",
+                str(exc),
+            )
+            return []
 
     def get_available(self) -> List[Expert]:
         """
-        Lọc danh sách Expert đang sẵn sàng nhận dự án (available=True).
-        Dùng làm bước tiền lọc trước khi matching chuyên môn.
+        Lấy danh sách Expert đang sẵn sàng nhận dự án.
 
-        Returns:
-            List[Expert] với available == True.
+        MongoDB: db.experts.find({"available": true}, {"_id": 0})
         """
-        return [exp for exp in self.get_all() if exp.available]
+        try:
+            cursor = self.collection.find({"available": True}, _NO_ID)
+            result = [
+                expert
+                for doc in cursor
+                if (expert := self._doc_to_expert(doc)) is not None
+            ]
+            logger.debug(
+                "[ExpertRepository.get_available] %d expert(s) đang available.",
+                len(result),
+            )
+            return result
+
+        except PyMongoError as exc:
+            logger.error(
+                "[ExpertRepository.get_available] Lỗi MongoDB: %s. Trả về [].",
+                str(exc),
+            )
+            return []
 
     def get_by_technology(self, technology: str) -> List[Expert]:
         """
-        Lọc Expert theo công nghệ trong trường `expertise`.
-        Tìm kiếm substring, không phân biệt hoa/thường.
+        Tìm Expert theo công nghệ trong mảng `expertise`.
+        Dùng $regex — MongoDB duyệt từng phần tử trong mảng.
+
+        MongoDB:
+            db.experts.find({
+                "expertise": { "$regex": keyword, "$options": "i" }
+            }, {"_id": 0})
 
         Args:
             technology: Tên công nghệ (vd: "PyTorch", "Blockchain", "ERP").
-
-        Returns:
-            List[Expert] sở hữu ít nhất một công nghệ khớp với từ khóa.
         """
-        keyword = technology.lower().strip()
-        return [
-            expert for expert in self.get_all()
-            if any(keyword in t.lower() for t in expert.expertise)
-        ]
+        try:
+            query = {
+                "expertise": {
+                    "$regex": technology.strip(),
+                    "$options": "i",
+                }
+            }
+            cursor = self.collection.find(query, _NO_ID)
+            result = [
+                expert
+                for doc in cursor
+                if (expert := self._doc_to_expert(doc)) is not None
+            ]
+            logger.debug(
+                "[ExpertRepository.get_by_technology] keyword='%s' → %d kết quả.",
+                technology, len(result),
+            )
+            return result
+
+        except PyMongoError as exc:
+            logger.error(
+                "[ExpertRepository.get_by_technology] Lỗi MongoDB: %s. Trả về [].",
+                str(exc),
+            )
+            return []
 
     # ------------------------------------------------------------------
     # Public Write methods
     # ------------------------------------------------------------------
 
-    def update_availability(
-        self,
-        expert_id: str,
-        available: bool,
-    ) -> bool:
+    def update_availability(self, expert_id: str, available: bool) -> bool:
         """
-        Cập nhật trạng thái sẵn sàng nhận dự án của Expert.
-        Được gọi bởi tầng Service khi Expert được assign hoặc hoàn thành dự án.
+        Cập nhật trạng thái nhận dự án của Expert — chỉ sửa đúng 1 field.
 
-        Args:
-            expert_id:    ID của Expert cần cập nhật.
-            available: True = rảnh, sẵn sàng nhận dự án mới.
-                          False = đang bận, không nhận thêm.
+        MongoDB:
+            db.experts.update_one(
+                {"id": expert_id},
+                {"$set": {"available": available}}
+            )
 
-        Returns:
-            True nếu cập nhật và ghi file thành công.
-            False nếu không tìm thấy Expert hoặc ghi file thất bại.
+        Không upsert: nếu Expert không tồn tại → log warning, trả False.
         """
-        raw_list = self._load_all_raw()
+        try:
+            result = self.collection.update_one(
+                {"id": expert_id},
+                {"$set": {"available": available}},
+            )
 
-        target_index: Optional[int] = next(
-            (i for i, r in enumerate(raw_list) if r.get("id") == expert_id),
-            None,
-        )
+            if result.matched_count == 0:
+                logger.warning(
+                    "[ExpertRepository.update_availability] "
+                    "Không tìm thấy Expert id='%s'. Bỏ qua cập nhật.",
+                    expert_id,
+                )
+                return False
 
-        if target_index is None:
-            logger.warning(
+            logger.info(
                 "[ExpertRepository.update_availability] "
-                "Không tìm thấy Expert id='%s'. Bỏ qua cập nhật.",
-                expert_id,
+                "Expert id='%s' → available=%s.", expert_id, available,
+            )
+            return True
+
+        except PyMongoError as exc:
+            logger.error(
+                "[ExpertRepository.update_availability] Lỗi MongoDB (id='%s'): %s.",
+                expert_id, str(exc),
             )
             return False
 
-        raw_list[target_index]["available"] = available
-        logger.info(
-            "[ExpertRepository.update_availability] "
-            "Expert id='%s' → available=%s.",
-            expert_id,
-            available,
-        )
-        return self._save_all_raw(raw_list)
-
     def save(self, expert: Expert) -> bool:
         """
-        Lưu một Expert object xuống file (thêm mới hoặc cập nhật toàn bộ record).
+        Upsert Expert: tìm theo "id" → cập nhật hoặc tạo mới.
 
-        Logic upsert:
-            · id đã tồn tại → replace toàn bộ record.
-            · id chưa có    → append vào cuối file.
-
-        Args:
-            expert: Expert object cần lưu (đã được validate ở tầng Service).
-
-        Returns:
-            True nếu ghi thành công, False nếu thất bại.
+        MongoDB:
+            db.experts.update_one(
+                {"id": expert.id},
+                {"$set": expert.to_dict()},
+                upsert=True
+            )
         """
-        raw_list = self._load_all_raw()
-        expert_dict = expert.to_dict()
-
-        target_index: Optional[int] = next(
-            (i for i, r in enumerate(raw_list) if r.get("id") == expert.id),
-            None,
-        )
-
-        if target_index is not None:
-            raw_list[target_index] = expert_dict
-            logger.info(
-                "[ExpertRepository.save] Cập nhật Expert id='%s'.", expert.id
-            )
-        else:
-            raw_list.append(expert_dict)
-            logger.info(
-                "[ExpertRepository.save] Thêm mới Expert id='%s'.", expert.id
+        try:
+            result = self.collection.update_one(
+                {"id": expert.id},
+                {"$set": expert.to_dict()},
+                upsert=True,
             )
 
-        return self._save_all_raw(raw_list)
+            if result.upserted_id is not None:
+                logger.info(
+                    "[ExpertRepository.save] INSERT mới — Expert id='%s'.", expert.id
+                )
+            else:
+                logger.info(
+                    "[ExpertRepository.save] UPDATE — Expert id='%s'.", expert.id
+                )
+            return True
+
+        except PyMongoError as exc:
+            logger.error(
+                "[ExpertRepository.save] Lỗi MongoDB (id='%s'): %s.",
+                expert.id, str(exc),
+            )
+            return False

@@ -1,96 +1,172 @@
 """
 Module  : src/repositories/review_repo.py
 Layer   : Repositories (Data Access Layer)
-Purpose : ReviewRepository — toàn bộ thao tác đọc/ghi dữ liệu Review.
+Purpose : ReviewRepository — toàn bộ thao tác đọc/ghi Review trên MongoDB.
+
+THAY ĐỔI SO VỚI PHIÊN BẢN JSON:
+    ① Bỏ kế thừa JsonRepository.
+    ② get_by_project_id()  → query {"project_id": project_id}.
+    ③ get_by_expert_id()   → query {"reviewed_expert_id": expert_id}.
+    ④ save()               → update_one upsert=True.
+
+Collection: broker4_db.reviews
+Index nên tạo:
+    db.reviews.createIndex({ "id": 1 },                   { unique: true })
+    db.reviews.createIndex({ "project_id": 1 })
+    db.reviews.createIndex({ "reviewed_expert_id": 1 })
+    db.reviews.createIndex({ "reviewer_sme_id": 1 })
 """
 
 import logging
 from typing import List, Optional
 
+from pymongo.collection import Collection
+from pymongo.errors import PyMongoError
+
+from src.config.db import get_db
 from src.models.review import Review
-from src.repositories.json_repository import JsonRepository
 
 logger = logging.getLogger(__name__)
 
-_REVIEW_DATA_FILE = "data/reviews.json"
+_NO_ID: dict = {"_id": 0}
 
 
-class ReviewRepository(JsonRepository):
-    """Repository chuyên biệt cho entity Review."""
+class ReviewRepository:
+    """Repository chuyên biệt cho entity Review trên MongoDB Atlas."""
 
-    def __init__(self, filepath: str = _REVIEW_DATA_FILE):
-        super().__init__(filepath)
+    def __init__(self) -> None:
+        self.collection: Collection = get_db()["reviews"]
 
     # ------------------------------------------------------------------
-    # Private helpers
+    # Private helper
     # ------------------------------------------------------------------
 
-    def _load_all_raw(self) -> List[dict]:
-        return self.read_json()
-
-    def _save_all_raw(self, raw_list: List[dict]) -> bool:
-        return self.write_json(raw_list)
+    def _doc_to_review(self, doc: dict) -> Optional[Review]:
+        doc.pop("_id", None)
+        try:
+            return Review.from_dict(doc)
+        except (KeyError, TypeError) as exc:
+            logger.warning(
+                "[ReviewRepository] Bỏ qua document lỗi cấu trúc (id='%s'): %s",
+                doc.get("id", "UNKNOWN"), str(exc),
+            )
+            return None
 
     # ------------------------------------------------------------------
     # Public Read methods
     # ------------------------------------------------------------------
 
     def get_all(self) -> List[Review]:
-        """Lấy toàn bộ danh sách Review. Trả [] nếu file lỗi."""
-        raw_list = self._load_all_raw()
-        result: List[Review] = []
-        for raw in raw_list:
-            try:
-                result.append(Review.from_dict(raw))
-            except (KeyError, TypeError) as exc:
-                logger.warning(
-                    "[ReviewRepository.get_all] Bỏ qua record lỗi (id='%s'): %s",
-                    raw.get("id", "UNKNOWN"), str(exc),
-                )
-        return result
+        """
+        Lấy toàn bộ danh sách Review.
+
+        MongoDB: db.reviews.find({}, {"_id": 0})
+        """
+        try:
+            cursor = self.collection.find({}, _NO_ID)
+            result = [
+                review
+                for doc in cursor
+                if (review := self._doc_to_review(doc)) is not None
+            ]
+            logger.debug(
+                "[ReviewRepository.get_all] Lấy được %d review(s).", len(result)
+            )
+            return result
+
+        except PyMongoError as exc:
+            logger.error(
+                "[ReviewRepository.get_all] Lỗi MongoDB: %s. Trả về [].", str(exc)
+            )
+            return []
 
     def get_by_id(self, review_id: str) -> Optional[Review]:
-        """Tìm Review theo ID. Trả None nếu không tìm thấy."""
-        for raw in self._load_all_raw():
-            if raw.get("id") == review_id:
-                try:
-                    return Review.from_dict(raw)
-                except (KeyError, TypeError) as exc:
-                    logger.error(
-                        "[ReviewRepository.get_by_id] Parse lỗi id='%s': %s",
-                        review_id, str(exc),
-                    )
-                    return None
-        logger.debug(
-            "[ReviewRepository.get_by_id] Không tìm thấy id='%s'.", review_id
-        )
-        return None
+        """
+        Tìm Review theo string ID.
+
+        MongoDB: db.reviews.find_one({"id": review_id}, {"_id": 0})
+        """
+        try:
+            doc = self.collection.find_one({"id": review_id}, _NO_ID)
+            if doc is None:
+                logger.debug(
+                    "[ReviewRepository.get_by_id] Không tìm thấy id='%s'.", review_id
+                )
+                return None
+            return self._doc_to_review(doc)
+
+        except PyMongoError as exc:
+            logger.error(
+                "[ReviewRepository.get_by_id] Lỗi MongoDB (id='%s'): %s.",
+                review_id, str(exc),
+            )
+            return None
 
     def get_by_project_id(self, project_id: str) -> List[Review]:
         """
         Lấy toàn bộ Review của một Project.
-        Tương đương: SELECT * FROM reviews WHERE project_id = ?
+
+        MongoDB: db.reviews.find({"project_id": project_id}, {"_id": 0})
+        Tương đương SQL: SELECT * FROM reviews WHERE project_id = ?
 
         Args:
-            project_id: ID của Project cần truy vấn review.
-
-        Returns:
-            List[Review] của Project đó.
+            project_id: ID của Project cần truy vấn.
         """
-        return [r for r in self.get_all() if r.project_id == project_id]
+        try:
+            cursor = self.collection.find({"project_id": project_id}, _NO_ID)
+            result = [
+                review
+                for doc in cursor
+                if (review := self._doc_to_review(doc)) is not None
+            ]
+            logger.debug(
+                "[ReviewRepository.get_by_project_id] "
+                "project_id='%s' → %d review(s).",
+                project_id, len(result),
+            )
+            return result
+
+        except PyMongoError as exc:
+            logger.error(
+                "[ReviewRepository.get_by_project_id] "
+                "Lỗi MongoDB (project_id='%s'): %s.", project_id, str(exc),
+            )
+            return []
 
     def get_by_expert_id(self, expert_id: str) -> List[Review]:
         """
         Lấy toàn bộ Review mà một Expert nhận được.
         Dùng để tính rating trung bình cho Expert ở tầng Service.
 
+        MongoDB:
+            db.reviews.find({"reviewed_expert_id": expert_id}, {"_id": 0})
+        Tương đương SQL: SELECT * FROM reviews WHERE reviewed_expert_id = ?
+
         Args:
             expert_id: ID của Expert cần truy vấn.
-
-        Returns:
-            List[Review] có reviewed_expert_id khớp.
         """
-        return [r for r in self.get_all() if r.reviewed_expert_id == expert_id]
+        try:
+            cursor = self.collection.find(
+                {"reviewed_expert_id": expert_id}, _NO_ID
+            )
+            result = [
+                review
+                for doc in cursor
+                if (review := self._doc_to_review(doc)) is not None
+            ]
+            logger.debug(
+                "[ReviewRepository.get_by_expert_id] "
+                "expert_id='%s' → %d review(s).",
+                expert_id, len(result),
+            )
+            return result
+
+        except PyMongoError as exc:
+            logger.error(
+                "[ReviewRepository.get_by_expert_id] "
+                "Lỗi MongoDB (expert_id='%s'): %s.", expert_id, str(exc),
+            )
+            return []
 
     # ------------------------------------------------------------------
     # Public Write methods
@@ -98,32 +174,35 @@ class ReviewRepository(JsonRepository):
 
     def save(self, review: Review) -> bool:
         """
-        Upsert một Review object:
-            id đã tồn tại → replace. Chưa có → append.
+        Upsert Review: tìm theo "id" → cập nhật hoặc tạo mới.
 
-        Args:
-            review: Review object đã được validate ở tầng Service.
-
-        Returns:
-            True nếu ghi thành công, False nếu thất bại.
+        MongoDB:
+            db.reviews.update_one(
+                {"id": review.id},
+                {"$set": review.to_dict()},
+                upsert=True
+            )
         """
-        raw_list = self._load_all_raw()
-        review_dict = review.to_dict()
-
-        target_index: Optional[int] = next(
-            (i for i, r in enumerate(raw_list) if r.get("id") == review.id),
-            None,
-        )
-
-        if target_index is not None:
-            raw_list[target_index] = review_dict
-            logger.info(
-                "[ReviewRepository.save] Cập nhật Review id='%s'.", review.id
-            )
-        else:
-            raw_list.append(review_dict)
-            logger.info(
-                "[ReviewRepository.save] Thêm mới Review id='%s'.", review.id
+        try:
+            result = self.collection.update_one(
+                {"id": review.id},
+                {"$set": review.to_dict()},
+                upsert=True,
             )
 
-        return self._save_all_raw(raw_list)
+            if result.upserted_id is not None:
+                logger.info(
+                    "[ReviewRepository.save] INSERT mới — Review id='%s'.", review.id
+                )
+            else:
+                logger.info(
+                    "[ReviewRepository.save] UPDATE — Review id='%s'.", review.id
+                )
+            return True
+
+        except PyMongoError as exc:
+            logger.error(
+                "[ReviewRepository.save] Lỗi MongoDB (id='%s'): %s.",
+                review.id, str(exc),
+            )
+            return False

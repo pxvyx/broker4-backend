@@ -22,6 +22,9 @@ ENV/
 .env.*
 !.env.example
 
+# Firebase Credentials
+firebase-service-account.json
+
 # OS
 .DS_Store
 Thumbs.db

@@ -1,78 +1,144 @@
 """
 Module  : src/repositories/sme_repo.py
 Layer   : Repositories (Data Access Layer)
-Purpose : SMERepository — thao tác đọc/ghi dữ liệu SME.
+Purpose : SMERepository — toàn bộ thao tác đọc/ghi SME trên MongoDB.
 
-THAY ĐỔI (Refactor Pseudo-Relational):
-  - XÓA hàm update_services_used() — logic này đã được tách ra
-    thành ProjectRepository và ContractRepository riêng biệt.
-  - Giữ lại: get_all(), get_by_id(), get_by_industry(), save().
+THAY ĐỔI SO VỚI PHIÊN BẢN JSON:
+    ① Bỏ kế thừa JsonRepository.
+    ② get_by_industry() → $regex + $options:"i" thay cho Python lower() + in.
+    ③ save()            → update_one upsert=True.
+
+Collection: broker4_db.smes
+Index nên tạo:
+    db.smes.createIndex({ "id": 1 },       { unique: true })
+    db.smes.createIndex({ "industry": 1 })
 """
 
 import logging
 from typing import List, Optional
 
+from pymongo.collection import Collection
+from pymongo.errors import PyMongoError
+
+from src.config.db import get_db
 from src.models.sme import SME
-from src.repositories.json_repository import JsonRepository
 
 logger = logging.getLogger(__name__)
 
-_SME_DATA_FILE = "data/smes.json"
+_NO_ID: dict = {"_id": 0}
 
 
-class SMERepository(JsonRepository):
-    """Repository chuyên biệt cho entity SME."""
+class SMERepository:
+    """Repository chuyên biệt cho entity SME trên MongoDB Atlas."""
 
-    def __init__(self, filepath: str = _SME_DATA_FILE):
-        super().__init__(filepath)
+    def __init__(self) -> None:
+        self.collection: Collection = get_db()["smes"]
 
     # ------------------------------------------------------------------
-    # Private helpers
+    # Private helper
     # ------------------------------------------------------------------
 
-    def _load_all_raw(self) -> List[dict]:
-        return self.read_json()
-
-    def _save_all_raw(self, raw_list: List[dict]) -> bool:
-        return self.write_json(raw_list)
+    def _doc_to_sme(self, doc: dict) -> Optional[SME]:
+        doc.pop("_id", None)
+        try:
+            return SME.from_dict(doc)
+        except (KeyError, TypeError) as exc:
+            logger.warning(
+                "[SMERepository] Bỏ qua document lỗi cấu trúc (id='%s'): %s",
+                doc.get("id", "UNKNOWN"), str(exc),
+            )
+            return None
 
     # ------------------------------------------------------------------
     # Public Read methods
     # ------------------------------------------------------------------
 
     def get_all(self) -> List[SME]:
-        """Lấy toàn bộ danh sách SME. Trả [] nếu file lỗi."""
-        raw_list = self._load_all_raw()
-        result: List[SME] = []
-        for raw in raw_list:
-            try:
-                result.append(SME.from_dict(raw))
-            except (KeyError, TypeError) as exc:
-                logger.warning(
-                    "[SMERepository.get_all] Bỏ qua record lỗi (id='%s'): %s",
-                    raw.get("id", "UNKNOWN"), str(exc),
-                )
-        return result
+        """
+        Lấy toàn bộ danh sách SME.
+
+        MongoDB: db.smes.find({}, {"_id": 0})
+        """
+        try:
+            cursor = self.collection.find({}, _NO_ID)
+            result = [
+                sme
+                for doc in cursor
+                if (sme := self._doc_to_sme(doc)) is not None
+            ]
+            logger.debug(
+                "[SMERepository.get_all] Lấy được %d SME(s).", len(result)
+            )
+            return result
+
+        except PyMongoError as exc:
+            logger.error(
+                "[SMERepository.get_all] Lỗi MongoDB: %s. Trả về [].", str(exc)
+            )
+            return []
 
     def get_by_id(self, sme_id: str) -> Optional[SME]:
-        """Tìm SME theo ID. Trả None nếu không tìm thấy."""
-        for raw in self._load_all_raw():
-            if raw.get("id") == sme_id:
-                try:
-                    return SME.from_dict(raw)
-                except (KeyError, TypeError) as exc:
-                    logger.error(
-                        "[SMERepository.get_by_id] Parse lỗi id='%s': %s",
-                        sme_id, str(exc),
-                    )
-                    return None
-        logger.debug("[SMERepository.get_by_id] Không tìm thấy id='%s'.", sme_id)
-        return None
+        """
+        Tìm SME theo string ID.
+
+        MongoDB: db.smes.find_one({"id": sme_id}, {"_id": 0})
+        """
+        try:
+            doc = self.collection.find_one({"id": sme_id}, _NO_ID)
+            if doc is None:
+                logger.debug(
+                    "[SMERepository.get_by_id] Không tìm thấy id='%s'.", sme_id
+                )
+                return None
+            return self._doc_to_sme(doc)
+
+        except PyMongoError as exc:
+            logger.error(
+                "[SMERepository.get_by_id] Lỗi MongoDB (id='%s'): %s.",
+                sme_id, str(exc),
+            )
+            return None
 
     def get_by_industry(self, industry_keyword: str) -> List[SME]:
-        """Lọc SME theo từ khóa ngành. Substring match, không phân biệt hoa/thường."""
-        keyword = industry_keyword.lower().strip()
-        return [sme for sme in self.get_all() if keyword in sme.industry.lower()]
+        """
+        Tìm SME theo từ khóa ngành — substring match, không phân biệt hoa/thường.
+
+        MongoDB:
+            db.smes.find({
+                "industry": { "$regex": keyword, "$options": "i" }
+            }, {"_id": 0})
+
+        $options "i" = case-insensitive, thay thế hoàn toàn cho
+        Python's keyword.lower() + "in" logic ở phiên bản JSON cũ.
+
+        Args:
+            industry_keyword: Từ khóa tìm kiếm (vd: "dệt may", "nông nghiệp").
+        """
+        try:
+            query = {
+                "industry": {
+                    "$regex": industry_keyword.strip(),
+                    "$options": "i",
+                }
+            }
+            cursor = self.collection.find(query, _NO_ID)
+            result = [
+                sme
+                for doc in cursor
+                if (sme := self._doc_to_sme(doc)) is not None
+            ]
+            logger.debug(
+                "[SMERepository.get_by_industry] keyword='%s' → %d SME(s).",
+                industry_keyword, len(result),
+            )
+            return result
+
+        except PyMongoError as exc:
+            logger.error(
+                "[SMERepository.get_by_industry] Lỗi MongoDB: %s. Trả về [].",
+                str(exc),
+            )
+            return []
 
     # ------------------------------------------------------------------
     # Public Write methods
@@ -80,21 +146,35 @@ class SMERepository(JsonRepository):
 
     def save(self, sme: SME) -> bool:
         """
-        Upsert một SME object:
-            id đã tồn tại → replace. Chưa có → append.
+        Upsert SME: tìm theo "id" → cập nhật hoặc tạo mới.
+
+        MongoDB:
+            db.smes.update_one(
+                {"id": sme.id},
+                {"$set": sme.to_dict()},
+                upsert=True
+            )
         """
-        raw_list = self._load_all_raw()
-        sme_dict = sme.to_dict()
+        try:
+            result = self.collection.update_one(
+                {"id": sme.id},
+                {"$set": sme.to_dict()},
+                upsert=True,
+            )
 
-        target_index: Optional[int] = next(
-            (i for i, r in enumerate(raw_list) if r.get("id") == sme.id), None
-        )
+            if result.upserted_id is not None:
+                logger.info(
+                    "[SMERepository.save] INSERT mới — SME id='%s'.", sme.id
+                )
+            else:
+                logger.info(
+                    "[SMERepository.save] UPDATE — SME id='%s'.", sme.id
+                )
+            return True
 
-        if target_index is not None:
-            raw_list[target_index] = sme_dict
-            logger.info("[SMERepository.save] Cập nhật SME id='%s'.", sme.id)
-        else:
-            raw_list.append(sme_dict)
-            logger.info("[SMERepository.save] Thêm mới SME id='%s'.", sme.id)
-
-        return self._save_all_raw(raw_list)
+        except PyMongoError as exc:
+            logger.error(
+                "[SMERepository.save] Lỗi MongoDB (id='%s'): %s.",
+                sme.id, str(exc),
+            )
+            return False
