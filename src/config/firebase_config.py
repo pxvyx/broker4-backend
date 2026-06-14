@@ -1,22 +1,16 @@
 """
 Module  : src/config/firebase_config.py
 Layer   : Infrastructure / Configuration
-Purpose : Khởi tạo Firebase Admin SDK — Singleton Pattern.
+Purpose : Khởi tạo Firebase Admin SDK — Singleton Pattern (Hỗ trợ đa môi trường).
 
 Cơ chế hoạt động:
     - init_firebase() chỉ khởi tạo app đúng 1 lần nhờ kiểm tra _apps.
-    - Đọc đường dẫn file Service Account JSON từ biến môi trường
-      FIREBASE_CREDENTIALS (cấu hình trong file .env).
+    - Chạy ở Local: Đọc đường dẫn file JSON từ biến FIREBASE_CREDENTIALS.
+    - Chạy ở Vercel/Serverless: Đọc trực tiếp chuỗi JSON từ biến FIREBASE_CREDENTIALS.
     - Được gọi 1 lần duy nhất trong create_app() tại src/app.py.
-
-Cấu hình .env cần có:
-    FIREBASE_CREDENTIALS=/absolute/path/to/serviceAccountKey.json
-
-Cách lấy file Service Account Key:
-    Firebase Console → Project Settings → Service Accounts
-    → Generate new private key → Tải file JSON về.
 """
 
+import json
 import logging
 import os
 
@@ -29,11 +23,8 @@ logger = logging.getLogger(__name__)
 
 def init_firebase() -> None:
     """
-    Khởi tạo Firebase Admin SDK từ Service Account credentials.
-
-    Kiểm tra `firebase_admin._apps` trước khi khởi tạo để đảm bảo
-    Singleton — tránh lỗi "Firebase App named '[DEFAULT]' already exists"
-    khi Flask reload trong debug mode.
+    Khởi tạo Firebase Admin SDK.
+    Hỗ trợ cả đường dẫn file (Local) và chuỗi JSON (Production/Vercel).
 
     Raises:
         RuntimeError: Nếu biến môi trường FIREBASE_CREDENTIALS chưa cấu hình,
@@ -44,41 +35,50 @@ def init_firebase() -> None:
         logger.debug("[Firebase] SDK đã được khởi tạo trước đó. Bỏ qua.")
         return
 
-    # ── Đọc đường dẫn file credentials từ .env ────────────────────────
-    credentials_path = os.getenv("FIREBASE_CREDENTIALS", "").strip()
-    if not credentials_path:
+    # ── Đọc cấu hình từ .env hoặc Biến môi trường hệ thống ──────────
+    cred_value = os.getenv("FIREBASE_CREDENTIALS", "").strip()
+    
+    if not cred_value:
         logger.critical(
             "[Firebase] Biến môi trường FIREBASE_CREDENTIALS chưa được cấu hình. "
-            "Thêm đường dẫn tuyệt đối đến file serviceAccountKey.json vào .env."
+            "Thêm đường dẫn file hoặc chuỗi JSON vào cấu hình hệ thống."
         )
-        raise RuntimeError(
-            "FIREBASE_CREDENTIALS chưa được cấu hình trong .env."
-        )
+        raise RuntimeError("FIREBASE_CREDENTIALS chưa được cấu hình.")
 
-    if not os.path.isfile(credentials_path):
-        logger.critical(
-            "[Firebase] Không tìm thấy file credentials tại: '%s'. "
-            "Kiểm tra lại đường dẫn trong FIREBASE_CREDENTIALS.",
-            credentials_path,
-        )
-        raise RuntimeError(
-            f"File Firebase credentials không tồn tại: '{credentials_path}'."
-        )
-
-    # ── Khởi tạo Firebase Admin SDK ───────────────────────────────────
+    # ── Phân luồng nạp cấu hình (File vs JSON String) ───────────────
     try:
-        cred = credentials.Certificate(credentials_path)
+        # Tình huống 1: Môi trường Local (Chứa đường dẫn file .json)
+        if cred_value.endswith('.json'):
+            if not os.path.isfile(cred_value):
+                logger.critical(
+                    "[Firebase] Không tìm thấy file credentials tại: '%s'.",
+                    cred_value,
+                )
+                raise RuntimeError(f"File Firebase credentials không tồn tại: '{cred_value}'.")
+            
+            cred = credentials.Certificate(cred_value)
+            source_info = f"file: '{cred_value}'"
+            
+        # Tình huống 2: Môi trường Vercel/Production (Chứa chuỗi JSON)
+        else:
+            try:
+                cred_dict = json.loads(cred_value)
+                cred = credentials.Certificate(cred_dict)
+                source_info = "biến môi trường (JSON String)"
+            except json.JSONDecodeError as e:
+                logger.critical(
+                    "[Firebase] Nội dung FIREBASE_CREDENTIALS không phải là file .json "
+                    "và cũng không phải chuỗi JSON hợp lệ."
+                )
+                raise RuntimeError("Định dạng FIREBASE_CREDENTIALS không hợp lệ.") from e
+
+        # ── Khởi tạo App ─────────────────────────────────────────────
         firebase_admin.initialize_app(cred)
-        logger.info(
-            "[Firebase] Khởi tạo Admin SDK thành công "
-            "từ file: '%s'.", credentials_path,
-        )
+        logger.info("[Firebase] Khởi tạo Admin SDK thành công từ %s.", source_info)
 
     except (ValueError, FirebaseError) as exc:
         logger.critical(
-            "[Firebase] Khởi tạo thất bại — file credentials không hợp lệ "
+            "[Firebase] Khởi tạo thất bại — credentials không hợp lệ "
             "hoặc thiếu quyền: %s", str(exc),
         )
-        raise RuntimeError(
-            f"Khởi tạo Firebase Admin SDK thất bại: {exc}"
-        ) from exc
+        raise RuntimeError(f"Khởi tạo Firebase Admin SDK thất bại: {exc}") from exc
